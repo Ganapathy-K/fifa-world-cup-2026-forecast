@@ -2,6 +2,7 @@ pandas>=2.0
 numpy>=1.24
 scipy>=1.10
 pyarrow>=14.0
+gradio>=5.0
 
 # Only needed to re-scrape the Annex C table (build_annex_c_table.py);
 # the committed annex_c_third_allocation.csv means you don't need this to run the model.

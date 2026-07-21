@@ -1,3 +1,13 @@
+---
+title: FIFA World Cup 2026 Predictor
+emoji: ⚽
+colorFrom: green
+colorTo: blue
+sdk: gradio
+app_file: app.py
+pinned: false
+---
+
 # FIFA World Cup 2026 — Champion Predictor
 
 A probabilistic forecast of the 2026 World Cup (48 teams, 104 matches), built from
