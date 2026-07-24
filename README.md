@@ -124,9 +124,10 @@ Scored on a clean time-split (train < 2023, test ≥ 2023, no leakage):
 | Brier | 0.637 | 0.570 | **0.520** |
 | Log loss | 1.055 | 0.963 | **0.884** |
 
-It beats a team-blind benchmark by 9–14% → it has learned real signal. RPS ~0.17 is a
-**solid amateur model, not Vegas-grade.** Full evaluation incl. a calibration curve:
-[EVALUATION.md](EVALUATION.md), [ELO_COMPARISON.md](ELO_COMPARISON.md).
+The finished model (**+ Elo**) beats a team-blind benchmark by **16–25%** — RPS 24.8%, Brier
+18.4%, log loss 16.2% — so it has learned real signal. (The Poisson-only baseline already beat it
+by 9–14%; Elo is the jump from there.) RPS ~0.17 is a **solid amateur model, not Vegas-grade.**
+Full evaluation incl. a calibration curve: [EVALUATION.md](EVALUATION.md), [ELO_COMPARISON.md](ELO_COMPARISON.md).
 
 **What to trust, and what not to:**
 

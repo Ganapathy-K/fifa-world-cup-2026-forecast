@@ -2,15 +2,21 @@
 
 > Time-split: trained on 45,806 matches before 2023-01-01, graded on 3,475 held-out matches after (no leakage). Lower is better on all metrics. Actual test outcomes: home 47.0% / draw 23.0% / away 30.0%.
 
-## Metrics: Poisson model vs dumb base-rate benchmark
+## Metrics: each model vs the dumb base-rate benchmark
 
-| Metric | Poisson model | Base-rate benchmark | Improvement % |
-|---|---|---|---|
-| Brier | 0.5703 | 0.6371 | 10.5 |
-| Log loss | 0.9625 | 1.0553 | 8.8 |
-| RPS | 0.1978 | 0.2299 | 14.0 |
+Three models scored on the same 3,475 held-out matches. Base-rate ignores who is playing and
+always predicts home 47% / draw 23% / away 30%. Poisson adds recency-weighted attack/defence
+ratios; the finished model adds Elo on top. Lower is better; Improvement % is against base-rate.
 
-**Verdict:** the baseline beats a team-blind benchmark by 9-14% - it has learned real signal. RPS 0.198 is in the normal band for simple football models. Not elite; the room for improvement is what Elo / Dixon-Coles / a talent prior are for.
+| Metric | Base-rate | Poisson | **+ Elo (finished)** | Poisson improv. | **Elo improv.** |
+|---|---|---|---|---|---|
+| Brier | 0.6371 | 0.5703 | **0.520** | 10.5% | **18.4%** |
+| Log loss | 1.0553 | 0.9625 | **0.884** | 8.8% | **16.2%** |
+| RPS | 0.2299 | 0.1978 | **0.173** | 14.0% | **24.8%** |
+
+**Verdict:** the finished model beats a team-blind benchmark by **16–25%** — it has learned real
+signal. Elo is the jump from the 9–14% Poisson baseline. RPS 0.173 is in the normal band for a
+solid amateur football model; not elite, but a real improvement over every simpler version below it.
 
 ## Calibration (predicted home-win prob vs actual home-win rate)
 
