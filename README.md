@@ -156,11 +156,28 @@ fifa_wc_2026_poisson/
 ├── 11_example_tournament.py     # replays ONE simulated tournament (a single 1-of-10k run)
 ├── 12_most_likely_bracket.py    # the deterministic "chalk" bracket (for curiosity, not the forecast)
 ├── 13_fit_presets.py            # fits every preset by held-out RPS (fit, don't preset)
+├── 14_bracket_overlay.py        # report card: knockout bracket, each box marked hit/miss
+├── 15_calibration.py            # reliability diagram — did it know how sure to be?
+├── 16_champion_odds_vs_reality.py
+├── 17_carousel_slides.py        # the hook / coin-flip / closing slides
+├── 18_normalise_slides.py       # pads every slide to one 1600x2000 canvas, emits the PDF
+├── app.py                       # Gradio demo: pick any of the 32 knockout ties, see the call vs reality
 ├── build_annex_c_table.py       # scrapes FIFA's exact third-place allocation table
 ├── annex_c_third_allocation.csv # the 495-row Annex C reference data
 ├── notebooks/                   # 01 data ingestion, 04 WC 2026 draw
 ├── archive/                     # earlier build notebooks (02,03,05,06,07,08) — the teaching trail
+├── assets/flags/                # 32 team flags (authored assets)
+├── reports/figures/             # generated figures — carousel_1..5.png, the PDF, evaluation/
 └── *.md                         # readable forecast + evaluation reports
+```
+
+Figures are **build artifacts**: scripts 14/16/17 write into `reports/figures/_raw/`
+(gitignored), and `18_normalise_slides.py` reads that, pads to the safe-margin canvas,
+and writes the committed finals. Never hand-edit a figure — regenerate it:
+
+```bash
+python 14_bracket_overlay.py && python 16_champion_odds_vs_reality.py && \
+python 17_carousel_slides.py && python 15_calibration.py && python 18_normalise_slides.py
 ```
 
 The pipeline is: **data → Elo → +confederation → +squad → Poisson → draw → Monte Carlo → odds.**
