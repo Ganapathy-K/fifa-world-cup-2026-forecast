@@ -132,18 +132,18 @@ def slide_calibration():
     wrong = len(ties) - right
 
     fig, ax = new_slide()
-    ax.text(CENTRE, 11.87, f"It called {len(ties)} ties", fontsize=31, color=NAVY["ink"],
+    ax.text(CENTRE, 11.56, f"It called {len(ties)} ties", fontsize=31, color=NAVY["ink"],
             ha="center", va="center", fontweight="bold")
-    ax.text(CENTRE, 11.87 - TIGHT, "too close to call", fontsize=31, color=NAVY["ink"],
+    ax.text(CENTRE, 11.56 - TIGHT, "too close to call", fontsize=31, color=NAVY["ink"],
             ha="center", va="center", fontweight="bold")
-    ax.text(CENTRE, 11.87 - TIGHT - GROUP, "Barely better than a coin flip, said the model.",
+    ax.text(CENTRE, 11.56 - TIGHT - GROUP, "Barely better than a coin flip, said the model.",
             fontsize=16, color=NAVY["muted"], ha="center", va="center")
 
     # Ten rows is the most this slide can hold, so the row pitch is set from the box height plus
     # the smallest readable gap rather than from the scale — the rows are one list and want to
     # read as a solid block anyway.
     row_pitch = 0.61
-    first_row = 11.87 - TIGHT - GROUP - SECTION
+    first_row = 11.56 - TIGHT - GROUP - SECTION
     for i, (text, pct, correct) in enumerate(ties):
         y = first_row - i * row_pitch
         tone = NAVY["hit"] if correct else NAVY["miss"]
@@ -157,7 +157,7 @@ def slide_calibration():
         ax.text(10 - MARGIN - 0.28, y, pct, fontsize=13, color=NAVY["muted"],
                 ha="right", va="center")
 
-    verdict_y = first_row - (len(ties) - 1) * row_pitch - SECTION
+    verdict_y = first_row - (len(ties) - 1) * row_pitch - GROUP
     ax.text(CENTRE, verdict_y, f"{right} right. {wrong} wrong.", fontsize=25, color=NAVY["ink"],
             ha="center", va="center", fontweight="bold")
     ax.text(CENTRE, verdict_y - TIGHT, "About what a coin flip should look like.",
@@ -170,7 +170,7 @@ def slide_calibration():
 
 def slide_close():
     fig, ax = new_slide()
-    ax.text(CENTRE, 11.45, "What I'd change", fontsize=34, color=NAVY["ink"],
+    ax.text(CENTRE, 11.58, "What I'd change", fontsize=34, color=NAVY["ink"],
             ha="center", va="center", fontweight="bold")
 
     points = [
@@ -186,7 +186,7 @@ def slide_close():
     # bullets as between the bullets and the footer — three items that belong together did not
     # look like they did.
     bullet_height = 1.25
-    first_bullet = 9.65
+    first_bullet = 9.78
     for i, (head, body) in enumerate(points):
         y = first_bullet - i * (bullet_height + GROUP)
         ax.plot([MARGIN, MARGIN], [y + 0.42, y - 1.05], color=NAVY["hit"], linewidth=3.5)

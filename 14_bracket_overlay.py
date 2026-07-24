@@ -275,7 +275,7 @@ def build(bronze_neutral, out_name, theme=LIGHT):
         else "Champion: Spain ✓"
     ax.text(X_CENTER + BOX_W / 2, -2.6, rounds,
             fontsize=14.5, color=T["ink"], ha="center", va="center", fontweight="bold")
-    ax.text(X_CENTER + BOX_W / 2, -3.75, finishes,
+    ax.text(X_CENTER + BOX_W / 2, -3.35, finishes,
             fontsize=14.5, color=T["ink"], ha="center", va="center", fontweight="bold")
 
     # The canvas is deliberately 4:5 to match the rest of the carousel — LinkedIn renders every
@@ -283,7 +283,7 @@ def build(bronze_neutral, out_name, theme=LIGHT):
     # letterbox, so the y-range is stretched well past the bracket itself and the title block and
     # tally are spread into that space at a larger size. Nothing is padded and no text is added.
     ax.set_xlim(-0.2, XR[0] + BOX_W + 0.2)
-    ax.set_ylim(-5.0, 21.8)
+    ax.set_ylim(-4.6, 21.8)
     ax.axis("off")
     plt.tight_layout()
     out = RAW / out_name
