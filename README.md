@@ -1,13 +1,3 @@
----
-title: World Cup 2026 — What My Model Said
-emoji: ⚽
-colorFrom: green
-colorTo: blue
-sdk: gradio
-app_file: app.py
-pinned: false
----
-
 # FIFA World Cup 2026 — Champion Predictor
 
 A probabilistic forecast of the 2026 World Cup (48 teams, 104 matches), built from
@@ -167,6 +157,7 @@ fifa_wc_2026_poisson/
 ├── notebooks/                   # 01 data ingestion, 04 WC 2026 draw
 ├── archive/                     # earlier build notebooks (02,03,05,06,07,08) — the teaching trail
 ├── assets/flags/                # 32 team flags (authored assets)
+├── space/README.md              # Hugging Face Space config — upload as the Space's README.md
 ├── reports/figures/             # generated figures — carousel_1..5.png, the PDF, evaluation/
 └── *.md                         # readable forecast + evaluation reports
 ```
