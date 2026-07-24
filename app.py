@@ -332,14 +332,36 @@ CSS = """
 #report h3 + p em { font-style: normal; text-transform: uppercase; letter-spacing: 0.06em;
                     font-size: 0.72rem; font-weight: 600; opacity: 0.75; }
 #report p { margin: 0.45rem 0; }
-#footer { font-size: 0.9rem; opacity: 0.75; margin-top: 0.5rem; }
+/* Stays flush left like everything above it — one alignment for the whole page. Padding rather
+   than margin so the space belongs to the block itself and sits equally above and below the line;
+   with margins the surrounding container was absorbing one side and not the other. */
+#footer { font-size: 0.9rem; opacity: 0.75; margin: 0; padding: 0.9rem 0; }
+#footer hr { margin: 0 0 0.9rem 0; }
+
+/* Gradio appends its own "Use via API · Built with Gradio · Settings" bar to every app. It is
+   the framework advertising itself, not part of this page, and it invites a visitor to click
+   away from the one thing the demo is for. */
+footer { display: none !important; }
 """
 
 # The headline is computed, not typed. It is the same claim the carousel makes, and a number that
 # drifts from the code is exactly the failure the deck's slide 4 already had once.
 FAVOURITE_WINS = sum(1 for tie in TIES if favourite_probability(tie[1], tie[2])[0] == tie[6])
 
-with gr.Blocks(title="World Cup 2026 — what the model said", fill_width=False) as demo:
+# Gradio ships its own Open Graph tags with og:title set to "Gradio", so anything sharing this
+# link — LinkedIn, WhatsApp, Slack — renders a preview card advertising the framework rather than
+# the page. These override them. `title=` only sets the browser tab; the card reads og:*.
+SHARE_CARD = """
+<meta property="og:title" content="FIFA World Cup 2026 — the report card" />
+<meta property="og:description" content="What my model predicted before a ball was kicked, against what actually happened. Pick any of the 32 knockout ties." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="FIFA World Cup 2026 — the report card" />
+<meta name="twitter:description" content="What my model predicted before a ball was kicked, against what actually happened." />
+"""
+
+with gr.Blocks(title="FIFA World Cup 2026 — the report card", head=SHARE_CARD,
+               fill_width=False) as demo:
     with gr.Column(elem_id="page"):
         gr.Markdown(
             "# World Cup 2026: what my model said before kick-off\n"

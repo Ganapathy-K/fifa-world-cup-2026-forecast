@@ -20,6 +20,13 @@ Full table: [CHAMPION_ODDS_FINAL.md](CHAMPION_ODDS_FINAL.md).
 
 ---
 
+**▶️ Try it live:** [what the model said about any of the 32 knockout ties](https://fifa-wc-2026-report-card-445269150468.us-central1.run.app)
+— pick a tie, see the pre-kickoff probability against what actually happened. Gradio app,
+containerised and deployed on Cloud Run (`Dockerfile` in this repo). It scales to zero, so the
+first request after a quiet spell takes a few seconds to wake.
+
+---
+
 ## The report card — what it said vs what happened
 
 The tournament is over, so the forecast can be marked. Five slides, in order:
