@@ -17,7 +17,10 @@ from match_engine import match_outcome_probabilities
 
 ROOT = Path(__file__).parent
 FIGURES = ROOT / "reports" / "figures"
-FIGURES.mkdir(parents=True, exist_ok=True)
+# The reliability diagram is not a carousel slide — it is the rigorous evaluation figure that
+# EVALUATION.md embeds, so it lives in its own evaluation/ folder rather than beside the deck.
+EVALUATION = FIGURES / "evaluation"
+EVALUATION.mkdir(parents=True, exist_ok=True)
 
 NAVY = {
     "ink": "#E6EAF2", "muted": "#96A1B8", "grid": "#2A3550", "surface": "#111A2B",
@@ -144,7 +147,7 @@ ax.text(0, -0.115,
         transform=ax.transAxes, fontsize=10, color=NAVY["muted"], va="top", linespacing=1.6)
 
 plt.tight_layout()
-out = FIGURES / "wc2026_calibration.png"
+out = EVALUATION / "wc2026_calibration.png"
 plt.savefig(out, dpi=160, facecolor=NAVY["surface"], bbox_inches="tight")
 print(buckets.to_string(index=False))
 print(f"\nsaved {out}")

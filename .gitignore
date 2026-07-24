@@ -9,5 +9,8 @@ __pycache__/
 
 # Kept on purpose (reference data + readable reports are committed):
 #   annex_c_third_allocation.csv, FITTED_PRESETS.md, CHAMPION_ODDS_FINAL.md, etc.
-#   reports/figures/*.png — committed because the README embeds them; regenerate
-#   any time with 14_bracket_overlay.py (never hand-edit a figure).
+
+# Figures are build artifacts (scripts 14/16/17 -> 18_normalise_slides.py). The finished
+# carousel_*.png and the evaluation figure ARE committed (portfolio README embeds them); the raw
+# pre-padding scratch is not. Never hand-edit a figure — regenerate it.
+reports/figures/_raw/

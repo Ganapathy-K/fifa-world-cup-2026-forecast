@@ -28,3 +28,24 @@
 | 1 | 0.907 | 1.000 | +0.093 |
 
 **Reading it:** a positive gap means the model UNDER-predicted home wins - expected, because the model has no home-advantage term. This is the single clearest motivation for adding one.
+
+---
+
+## Out-of-sample: the WC 2026 knockout rounds
+
+The held-out split above is the honest lab measurement. This is the field one - all 32
+knockout ties of the actual tournament, re-scored with the **locked pre-tournament
+ratings** on the matchups that actually occurred. Knockouts must produce a winner, so the
+draw probability is split evenly between the two sides.
+
+![Reliability diagram: what the model claimed vs what actually happened, WC 2026 knockouts](reports/figures/evaluation/wc2026_calibration.png)
+
+Regenerate with `python 15_calibration.py`.
+
+**Reading it:** the favourite went through in **26 of 32** ties (81%). Every bucket sits
+*above* the diagonal - the model was consistently more right than it claimed to be, i.e.
+**underconfident**, not overconfident. The ten ties it rated 50-60% went **6-4** its way.
+
+**Caveats, stated plainly:** neutral venue is assumed throughout (no host bump), and 5-10
+matches per bucket is a thin sample - a single flipped result moves a point visibly. This
+is directional evidence, not a calibration certificate.

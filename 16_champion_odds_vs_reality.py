@@ -29,7 +29,9 @@ from matplotlib.patches import Circle, Polygon, Rectangle
 
 ROOT = Path(__file__).parent
 FIGURES = ROOT / "reports" / "figures"
-FIGURES.mkdir(parents=True, exist_ok=True)
+# Raw figure -> gitignored scratch; 18_normalise_slides.py pads it into the final carousel_3.png.
+RAW = FIGURES / "_raw"
+RAW.mkdir(parents=True, exist_ok=True)
 FLAGS = ROOT / "assets" / "flags"
 
 CODE = {
@@ -139,21 +141,28 @@ def make_football(path, size=200):
     ax.axis("off")
     fig.patch.set_alpha(0)
 
-    ax.add_patch(Circle((0, 0), 1.0, facecolor="white", edgecolor="#1A1A1A", linewidth=7))
+    body = Circle((0, 0), 1.0, facecolor="white", edgecolor="#1A1A1A", linewidth=7)
+    ax.add_patch(body)
 
     def pentagon(cx, cy, r, rotation):
         return [(cx + r * math.cos(math.radians(rotation + k * 72)),
                  cy + r * math.sin(math.radians(rotation + k * 72))) for k in range(5)]
 
-    # One bold central pentagon plus five chunky rim patches. Thin seams read as a gear at
-    # icon size; solid shapes are what makes it recognisably a football.
-    ax.add_patch(Polygon(pentagon(0, 0, 0.46, 90), closed=True, facecolor="#1A1A1A"))
+    # One bold central pentagon plus five chunky rim patches. The rim patches MUST be clipped
+    # to the body — passing clip_path= to the constructor silently does nothing, and unclipped
+    # points poking past the edge are what made this read as a cog. Draw it big enough to see:
+    # below ~40px the white slivers between the patches start reading as gear teeth again.
+    ax.add_patch(Polygon(pentagon(0, 0, 0.44, 90), closed=True, facecolor="#1A1A1A"))
     for i in range(5):
         angle = math.radians(90 + i * 72 + 36)
-        ax.add_patch(Polygon(pentagon(0.92 * math.cos(angle), 0.92 * math.sin(angle),
-                                      0.34, math.degrees(angle) + 180),
-                             closed=True, facecolor="#1A1A1A",
-                             clip_path=Circle((0, 0), 0.96, transform=ax.transData)))
+        patch = Polygon(pentagon(0.90 * math.cos(angle), 0.90 * math.sin(angle),
+                                 0.32, math.degrees(angle) + 180),
+                        closed=True, facecolor="#1A1A1A")
+        ax.add_patch(patch)
+        patch.set_clip_path(body)
+
+    # Re-stroke the rim on top so the clipped patches end on a clean circular edge.
+    ax.add_patch(Circle((0, 0), 1.0, facecolor="none", edgecolor="#1A1A1A", linewidth=7))
 
     fig.savefig(path, dpi=100, transparent=True)
     plt.close(fig)
@@ -174,7 +183,10 @@ def draw_ball(ax, x, y):
 
 
 def build(show_ball, out_name, eliminator_flags=False):
-    fig, ax = plt.subplots(figsize=(13, 9))
+    # Taller than the chart strictly needs: the deck is 4:5, and at 13x9 this page had to
+    # be shrunk hard to fit, leaving wide empty bands above and below it. Stretching the
+    # figure towards the deck's shape puts that space into the rows instead.
+    fig, ax = plt.subplots(figsize=(13, 11.8))
     fig.patch.set_facecolor(NAVY["surface"])
     ax.set_facecolor(NAVY["surface"])
     pending = []
@@ -273,16 +285,37 @@ def build(show_ball, out_name, eliminator_flags=False):
     # Vertical rhythm: a big gap ABOVE the block and an equal one BELOW it (down to the
     # x-axis), with smaller equal gaps between the three blocks. That makes the furniture
     # read as one group floating in the empty wedge, rather than as three loose items.
+    # Grouping by distance: the two notes and the legend are one block of furniture, so the gaps
+    # BETWEEN them are small and equal, while the gaps to the bars above and the axis below are
+    # larger. Previously all four gaps were similar, which made three related items read as three
+    # unrelated ones. Wording tightened too — same facts, fewer words.
+    # Positions are DERIVED from the text, not eyeballed — and derived after the wording was
+    # final, since trimming a line changes how much room the block needs.
+    #
+    # One row of the chart is 11.8in / ~14.4 rows = 0.82in tall. Body text is 10.5pt on 1.7
+    # linespacing = 17.85pt = 0.30 rows per line. Everything below follows from that.
+    LINE = 0.30                       # one line of body text
+    GROUP, SECTION = 0.55, 1.15       # inside the furniture block · block to bars and axis
+    SWATCH_HALF = 0.19                # legend swatch is 0.38 tall, y is its centre
+
     note_x = 16.4
-    ax.text(note_x, 7.08,
-            "Losing to the eventual champion is not a modelling error —\n"
+    first_note_y = 6.0 + SECTION      # Germany's bar is row 6 and carries the longest label
+    ax.text(note_x, first_note_y,
+            "Losing to the eventual champion is not a model error —\n"
             "the simulation already priced in the bracket.",
             fontsize=10.5, color=NAVY["muted"], va="top", ha="left", linespacing=1.7)
-    ax.text(note_x, 8.57,
-            "Only two exits were true upsets — the model rated Netherlands'\n"
-            "and Colombia's ties at just 57% and 54%. All three shootouts\n"
-            "were lost by a single penalty, which no goals model forecasts.",
+
+    # The two red bars are the upsets (Brazil, Germany). Netherlands and Colombia are GREY —
+    # too close to call — so the note must not let a colon imply they were the upsets, which is
+    # what the previous wording did against its own chart.
+    second_note_y = first_note_y + 2 * LINE + GROUP
+    ax.text(note_x, second_note_y,
+            "Only two exits were real upsets. Netherlands and Colombia\n"
+            "only look like shocks — their ties were 57% and 54%, barely\n"
+            "better than a coin flip. All three shootouts turned on one penalty.",
             fontsize=10.5, color=NAVY["muted"], va="top", ha="left", linespacing=1.7)
+
+    legend_top = second_note_y + 3 * LINE + GROUP + SWATCH_HALF
 
     # "too close to call" over "toss-up" or "coin flip": it needs no prior knowledge, and it
     # is already the title of slide 4 — so the deck says one thing twice rather than two
@@ -290,24 +323,31 @@ def build(show_ball, out_name, eliminator_flags=False):
     legend = [("won it", "champion"), ("beaten by a favourite", "expected"),
               ("too close to call", "cointoss"), ("beaten by an underdog", "upset")]
     for j, (label, tone) in enumerate(legend):
-        y = 10.66 + j * 0.64
+        y = legend_top + j * GROUP
         ax.add_patch(Rectangle((note_x, y - 0.19), 0.52, 0.38,
                                facecolor=NAVY[tone], zorder=5))
         ax.text(note_x + 0.95, y, label, fontsize=10.5, color=NAVY["muted"],
                 va="center", ha="left")
 
-    out = FIGURES / out_name
+    # The ball marks three rows but says nothing on its own, so it gets a legend line too —
+    # in the same column as the colour swatches, since it is read the same way.
+    y_pens = legend_top + len(legend) * GROUP
+    ax.add_artist(AnnotationBbox(OffsetImage(_ball_img, zoom=0.085), (note_x + 0.26, y_pens),
+                                 frameon=False, box_alignment=(0.5, 0.5), zorder=5))
+    ax.text(note_x + 0.95, y_pens, "decided on penalties", fontsize=10.5,
+            color=NAVY["muted"], va="center", ha="left")
+
+    out = RAW / out_name
     plt.savefig(out, dpi=160, facecolor=NAVY["surface"], bbox_inches="tight",
-                pad_inches=0.55)
+                pad_inches=0.35)
     plt.close(fig)
     print(f"saved {out}")
 
 
 # Ball is the default: it catches the eye and pulls you to the row, the score explains why
-# once you are there. The text-only variant stays available for comparison.
-build(show_ball=True, out_name="wc2026_champion_odds_vs_reality.png",
-      eliminator_flags=True)
-build(show_ball=False, out_name="wc2026_champion_odds_vs_reality_noball.png",
+# once you are there. The text-only (show_ball=False) variant was dropped as an alternate; the
+# parameter stays, so it can be re-emitted by adding a build() line.
+build(show_ball=True, out_name="carousel_3_odds_vs_reality.png",
       eliminator_flags=True)
 for team in teams:
     print(f"  {team:<13} {ODDS[team]:>5}%  {classify(team)}")

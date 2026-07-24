@@ -1,5 +1,5 @@
 ---
-title: FIFA World Cup 2026 Predictor
+title: World Cup 2026 — What My Model Said
 emoji: ⚽
 colorFrom: green
 colorTo: blue
@@ -27,6 +27,33 @@ tournament 10,000 times, and reports each team's odds of reaching each round.
 | Germany | 5.9 | 12.3 | 24.6 |
 
 Full table: [CHAMPION_ODDS_FINAL.md](CHAMPION_ODDS_FINAL.md).
+
+---
+
+## The report card — what it said vs what happened
+
+The tournament is over, so the forecast can be marked. Five slides, in order:
+the claim, the bracket, the champion odds against reality, the coin-flip ties,
+and what I'd change. Download as one file:
+[wc2026_report_card_carousel.pdf](reports/figures/wc2026_report_card_carousel.pdf).
+
+![The claim: what the model said before a ball was kicked](reports/figures/carousel_1_hook.png)
+
+![Knockout bracket, every team box marked hit or miss](reports/figures/carousel_2_bracket.png)
+
+![Pre-tournament champion odds against what actually happened](reports/figures/carousel_3_odds_vs_reality.png)
+
+![The ten ties it called too close to call — it went 6-4](reports/figures/carousel_4_calibration.png)
+
+![What I'd change next time](reports/figures/carousel_5_close.png)
+
+Short version: it called the **exact final** (Spain v Argentina) and the champion,
+the favourite went through in **26 of 32** knockout ties, and it was *underconfident* —
+the ten ties it rated 50–60% went 6–4 its way. The misses it got wrong were real:
+Brazil, Germany and Portugal were all overrated, and three of the exits were
+shootouts, which a goals model cannot forecast either way.
+
+The reliability diagram behind slide 4 lives in [EVALUATION.md](EVALUATION.md).
 
 ---
 
@@ -158,5 +185,3 @@ python 13_fit_presets.py            # re-fits the presets and reports the RPS su
 
 *The model is frozen for the duration of the tournament — no mid-event tweaks. That's
 the credibility test: the predictions stand or fall as they were made before kickoff.*
-</content>
-</invoke>

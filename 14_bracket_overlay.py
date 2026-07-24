@@ -14,7 +14,11 @@ from matplotlib.patches import FancyBboxPatch
 
 ROOT = Path(__file__).parent
 FIGURES = ROOT / "reports" / "figures"
-FIGURES.mkdir(parents=True, exist_ok=True)
+# Raw pre-padding figures go to a gitignored scratch dir. 18_normalise_slides.py reads them, pads
+# each to the uniform 4:5 canvas, and writes the finished carousel_*.png into FIGURES. Keeping the
+# raw and the final in separate places is what stops both stages piling up side by side.
+RAW = FIGURES / "_raw"
+RAW.mkdir(parents=True, exist_ok=True)
 FLAGS = ROOT / "assets" / "flags"
 
 _flag_cache = {}
@@ -120,7 +124,7 @@ PRED = {
 # Boxes are deliberately squat rather than wide: the score sits just right of the team
 # code instead of being flushed to a far edge, which killed a lot of dead space per box
 # and let the whole bracket shrink horizontally.
-BOX_W, BOX_H, PAIR_GAP = 1.37, 0.50, 0.07
+BOX_W, BOX_H, PAIR_GAP = 1.46, 0.50, 0.07
 
 
 def draw_match(ax, x, y_center, match, round_key, out_of_scope=False):
@@ -154,11 +158,11 @@ def draw_match(ax, x, y_center, match, round_key, out_of_scope=False):
                 frameon=False, box_alignment=(0.5, 0.5), zorder=4,
             ))
 
-        ax.text(x + 0.56, y, team, fontsize=9.5, color=T["ink"], va="center", ha="left",
+        ax.text(x + 0.56, y, team, fontsize=8.6, color=T["ink"], va="center", ha="left",
                 fontweight="bold" if won else "normal", zorder=4)
 
         score = str(goals) if pens is None else f"{goals} ({pens})"
-        ax.text(x + BOX_W - 0.08, y, score, fontsize=9,
+        ax.text(x + BOX_W - 0.08, y, score, fontsize=8,
                 color=T["ink"] if won else T["muted"],
                 va="center", ha="right", fontweight="bold" if won else "normal", zorder=4)
 
@@ -189,7 +193,7 @@ def build(bronze_neutral, out_name, theme=LIGHT):
     """Render the bracket. bronze_neutral greys the third-place box instead of marking it a miss."""
     global T
     T = theme
-    fig, ax = plt.subplots(figsize=(17.5, 12))
+    fig, ax = plt.subplots(figsize=(16, 20))
     fig.patch.set_facecolor(T["surface"])
     ax.set_facecolor(T["surface"])
 
@@ -235,47 +239,60 @@ def build(bronze_neutral, out_name, theme=LIGHT):
     ax.text(X_CENTER + BOX_W / 2, Y_BRONZE + 0.95, bronze_label, fontsize=9.5, color=T["muted"],
             ha="center", va="center")
 
-    ax.text(0.3, 18.0, "FIFA World Cup 2026 — what my model got right",
-            fontsize=20, color=T["ink"], ha="left", va="center", fontweight="bold")
-    ax.text(0.3, 17.35,
+    ax.text(0.3, 20.6, "FIFA World Cup 2026 — what my model got right",
+            fontsize=26, color=T["ink"], ha="left", va="center", fontweight="bold")
+    ax.text(0.3, 19.4,
             "Poisson + Elo model, predictions locked before a ball was kicked. "
             "Every team box marked against what the model predicted for that round.",
-            fontsize=11, color=T["muted"], ha="left", va="center")
+            fontsize=13.5, color=T["muted"], ha="left", va="center")
 
-    ax.add_patch(FancyBboxPatch((0.3, 16.75), 0.28, 0.28, boxstyle="round,pad=0,rounding_size=0.05",
+    ax.add_patch(FancyBboxPatch((0.3, 17.95), 0.30, 0.30, boxstyle="round,pad=0,rounding_size=0.05",
                                 facecolor=T["hit_fill"], edgecolor=T["hit_edge"], linewidth=1.4))
-    ax.text(0.72, 16.89, "✓  model had this team reaching this round", fontsize=9.5,
+    ax.text(0.76, 18.1, "✓  model had this team reaching this round", fontsize=12.5,
             color=T["muted"], va="center", ha="left")
-    ax.add_patch(FancyBboxPatch((4.15, 16.75), 0.28, 0.28, boxstyle="round,pad=0,rounding_size=0.05",
+    ax.add_patch(FancyBboxPatch((6.3, 17.95), 0.30, 0.30, boxstyle="round,pad=0,rounding_size=0.05",
                                 facecolor=T["miss_fill"], edgecolor=T["miss_edge"], linewidth=1.4))
-    ax.text(4.57, 16.89, "✗  it did not", fontsize=9.5, color=T["muted"], va="center", ha="left")
+    ax.text(6.76, 18.1, "✗  it did not", fontsize=12.5, color=T["muted"], va="center", ha="left")
+
+    # No shootout entry here. Both a ball icon and a text gloss were tried and cut: the icon
+    # reads as a cog at box scale, and the legend is about hit/miss — a scoring convention is a
+    # different kind of thing, so it made the row say two unrelated things. Slide 3 explains
+    # penalties in words where it actually matters.
     if bronze_neutral:
-        ax.add_patch(FancyBboxPatch((6.1, 16.75), 0.28, 0.28,
+        ax.add_patch(FancyBboxPatch((8.8, 17.95), 0.30, 0.30,
                                     boxstyle="round,pad=0,rounding_size=0.05",
                                     facecolor=T["na_fill"], edgecolor=T["na_edge"], linewidth=1.4))
-        ax.text(6.52, 16.89, "–  not forecast", fontsize=9.5, color=T["muted"],
+        ax.text(9.26, 18.1, "–  not forecast", fontsize=12.5, color=T["muted"],
                 va="center", ha="left")
 
+    # Two lines, not one. As a single run it stretched the full width of the figure and pushed
+    # into both margins, so the summary read as wider than the bracket it summarises. Splitting
+    # it also separates the per-round scoreline from the two one-off results.
     # Ordered by the date each was decided — third place (Jul 18) precedes the final (Jul 19).
-    tally = ("Last 32: 26/32   ·   Last 16: 13/16   ·   Last 8: 5/8   ·   Last 4: 3/4   ·   "
-             "Final: 2/2")
-    if not bronze_neutral:
-        tally += "   ·   Third place: England ✗"
-    tally += "   ·   Champion: Spain ✓"
-    ax.text(X_CENTER + BOX_W / 2, -1.35, tally,
-            fontsize=12.5, color=T["ink"], ha="center", va="center", fontweight="bold")
+    rounds = ("Last 32: 26/32   ·   Last 16: 13/16   ·   Last 8: 5/8   ·   "
+              "Last 4: 3/4   ·   Final: 2/2")
+    finishes = "Third place: England ✗   ·   Champion: Spain ✓" if not bronze_neutral \
+        else "Champion: Spain ✓"
+    ax.text(X_CENTER + BOX_W / 2, -2.6, rounds,
+            fontsize=14.5, color=T["ink"], ha="center", va="center", fontweight="bold")
+    ax.text(X_CENTER + BOX_W / 2, -3.75, finishes,
+            fontsize=14.5, color=T["ink"], ha="center", va="center", fontweight="bold")
 
+    # The canvas is deliberately 4:5 to match the rest of the carousel — LinkedIn renders every
+    # page of a document post at one ratio. A wide bracket in a tall frame would normally
+    # letterbox, so the y-range is stretched well past the bracket itself and the title block and
+    # tally are spread into that space at a larger size. Nothing is padded and no text is added.
     ax.set_xlim(-0.2, XR[0] + BOX_W + 0.2)
-    ax.set_ylim(-1.8, 18.5)
+    ax.set_ylim(-5.0, 21.8)
     ax.axis("off")
     plt.tight_layout()
-    out = FIGURES / out_name
+    out = RAW / out_name
     plt.savefig(out, dpi=160, facecolor=T["surface"], bbox_inches="tight")
     plt.close(fig)
     print(f"saved {out}")
 
 
-build(bronze_neutral=False, out_name="wc2026_bracket.png", theme=LIGHT)
-build(bronze_neutral=False, out_name="wc2026_bracket_dark.png", theme=DARK)
-build(bronze_neutral=False, out_name="wc2026_bracket_navy.png", theme=NAVY)
-build(bronze_neutral=True, out_name="wc2026_bracket_bronze_greyed.png", theme=LIGHT)
+# One output: the navy bracket is carousel slide 2. The light, dark and bronze-greyed variants were
+# all explored and dropped; the LIGHT/DARK themes and bronze_neutral=True stay in the code so any
+# can be re-emitted by adding a build() line.
+build(bronze_neutral=False, out_name="carousel_2_bracket.png", theme=NAVY)
