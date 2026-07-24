@@ -142,8 +142,15 @@ def slide_calibration():
     # Ten rows is the most this slide can hold, so the row pitch is set from the box height plus
     # the smallest readable gap rather than from the scale — the rows are one list and want to
     # read as a solid block anyway.
-    row_pitch = 0.61
-    first_row = 11.56 - TIGHT - GROUP - SECTION
+    #
+    # The block is then CENTRED in the band between the sub-heading and the verdict, with the
+    # leftover space split equally above and below. Previously the gap above was SECTION and the
+    # gap below was GROUP, so ten evenly-spaced rows sat inside an obviously lopsided frame.
+    row_pitch = 0.66
+    subtitle_y = 11.56 - TIGHT - GROUP
+    verdict_y = 1.55
+    end_gap = ((subtitle_y - verdict_y) - (len(ties) - 1) * row_pitch) / 2
+    first_row = subtitle_y - end_gap
     for i, (text, pct, correct) in enumerate(ties):
         y = first_row - i * row_pitch
         tone = NAVY["hit"] if correct else NAVY["miss"]
@@ -157,7 +164,6 @@ def slide_calibration():
         ax.text(10 - MARGIN - 0.28, y, pct, fontsize=13, color=NAVY["muted"],
                 ha="right", va="center")
 
-    verdict_y = first_row - (len(ties) - 1) * row_pitch - GROUP
     ax.text(CENTRE, verdict_y, f"{right} right. {wrong} wrong.", fontsize=25, color=NAVY["ink"],
             ha="center", va="center", fontweight="bold")
     ax.text(CENTRE, verdict_y - TIGHT, "About what a coin flip should look like.",
