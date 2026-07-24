@@ -22,6 +22,7 @@ Deploy:       Hugging Face Space, SDK = gradio. The two parquets under data/proc
 from pathlib import Path
 
 import base64
+import os
 
 import gradio as gr
 import pandas as pd
@@ -376,4 +377,8 @@ if __name__ == "__main__":
     # Gradio 6 moved css from the Blocks constructor to launch(). Passing it to Blocks is not an
     # error — it warns and then silently does nothing, which is why the page stayed full-width
     # while the stylesheet was visibly being served.
-    demo.launch(css=CSS)
+    #
+    # Cloud Run injects PORT and routes to the container's external interface, so the server has
+    # to bind 0.0.0.0 rather than Gradio's default 127.0.0.1 — bound to localhost the container
+    # starts cleanly and then fails every health check. Locally PORT is unset and 7860 applies.
+    demo.launch(css=CSS, server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))

@@ -1,0 +1,29 @@
+# Without this file gcloud falls back to .gitignore for the upload context — and .gitignore
+# excludes data/processed/, which is exactly where the two locked rating parquets the app loads
+# at import live. The build would then succeed and the container would crash on first request.
+# This file exists to keep those two parquets in the context.
+
+.git/
+.gitignore
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Pipeline, analysis and reporting — how the numbers were made, not what serves them.
+notebooks/
+archive/
+reports/
+huggingface_space/
+0*.py
+1*.py
+build_annex_c_table.py
+*.md
+LICENSE
+
+# Every processed parquet except the two the app actually loads.
+data/processed/*.parquet
+!data/processed/wc_final_ratings.parquet
+!data/processed/supremacy_params.parquet
+data/raw/
+data/interim/
