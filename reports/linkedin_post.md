@@ -13,7 +13,7 @@ along with a link back to the 11 June post that made the original call.
 
 ---
 
-My World Cup forecast called the champion and the exact final — before a ball was kicked.
+My FIFA World Cup 2026 forecast called the champion and the exact final — before a ball was kicked.
 
 Here's the report card, misses included.
 
@@ -29,10 +29,21 @@ Method: Elo-driven Dixon–Coles Poisson, 10,000 sims, locked in git before kick
 
 Code + data: https://lnkd.in/gsZdfYAv
 
+#MachineLearning #DataScience #FIFAWorldCup #Forecasting #AI
+
 ---
 
 `lnkd.in/gsZdfYAv` is LinkedIn's own shortener — it rewrote the plain
 `github.com/Ganapathy-K/fifa-world-cup-2026-forecast` on submit. Nothing was pasted shortened.
+
+## Edited in place ~22:40, about 2.5 h after publishing
+Two reactions in the first 2.5 h prompted it. Claude's advice was to leave it alone — distribution
+is allocated in the first hour or two and an edit does not re-run it, so late hashtags reach almost
+nobody. **He chose to edit anyway rather than spend a separate post on it, which is a reasonable
+call: the cost is near zero and the post is the artifact he will link from applications for months.**
+Two changes: `My World Cup forecast` → **`My FIFA World Cup 2026 forecast`** (the tournament was
+never named, and "World Cup" is ambiguous for someone who also posts cricket), and five hashtags
+added at the very bottom so they cannot break the hook. Five is the practical ceiling.
 
 ## Follow-up comment (posted under the 11 June original, replying to the demo request)
 
