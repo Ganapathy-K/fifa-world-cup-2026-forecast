@@ -73,7 +73,10 @@ def slide_hook():
     fig, ax = new_slide()
     ax.text(CENTRE, 9.42, "I forecast the", fontsize=27, color=NAVY["muted"],
             ha="center", va="center")
-    ax.text(CENTRE, 8.37, "2026 World Cup", fontsize=40, color=NAVY["ink"],
+    # Full official name on the first mention (slide 3 then uses plain "the World Cup" in prose).
+    # fontsize drops 40 -> 33 because the longer string would otherwise widen the tight bbox and
+    # shrink the whole slide once 18_normalise_slides.py pads it to the 1600x2000 canvas.
+    ax.text(CENTRE, 8.37, "FIFA World Cup 2026", fontsize=33, color=NAVY["ink"],
             ha="center", va="center", fontweight="bold")
     ax.text(CENTRE, 7.47, "before a ball was kicked.", fontsize=27, color=NAVY["muted"],
             ha="center", va="center")

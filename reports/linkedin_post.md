@@ -10,6 +10,7 @@ comment once the Space is live.
 ---
 
 My World Cup forecast called the champion and the exact final — before a ball was kicked.
+
 Here's the report card, misses included.
 
 It got the final right (Spain over Argentina) and 26 of 32 knockout ties.
