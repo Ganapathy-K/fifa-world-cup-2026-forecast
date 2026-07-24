@@ -157,7 +157,7 @@ fifa_wc_2026_poisson/
 ├── notebooks/                   # 01 data ingestion, 04 WC 2026 draw
 ├── archive/                     # earlier build notebooks (02,03,05,06,07,08) — the teaching trail
 ├── assets/flags/                # 32 team flags (authored assets)
-├── space/README.md              # Hugging Face Space config — upload as the Space's README.md
+├── huggingface_space/README.md  # Hugging Face Space config — upload as the Space's README.md
 ├── reports/figures/             # generated figures — carousel_1..5.png, the PDF, evaluation/
 └── *.md                         # readable forecast + evaluation reports
 ```
